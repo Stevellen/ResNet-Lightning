@@ -1,4 +1,4 @@
-<h1><center>ResNetLightning</center></h1> 
+<h1><center>ResNet-Lightning</center></h1> 
 This is a quick Pytorch Lighning wrapper around the ResNet models provided by Torchvision. This model is reliant on torch, torchvision and pytorch-lightning packages, which must be installed separately. The model can be trained directly from the command line using the following arguments:
 
 * model - The ResNet variant to be used, e.g. 18, 50, etc.
