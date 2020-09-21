@@ -13,3 +13,8 @@ This is a quick Pytorch Lighning wrapper around the ResNet models provided by To
 * transfer [-tr] (optional) - Flag to indicate whether this is a transfer learning task or not; defaults to false, meaning the entire model will be trained unless this flag is provided
 * save_path [-s] (optional) - Path to directory where final model checkpoint will be saved; defaults to CWD.
 * gpus [-g] (optional) - Number of GPUs to use during training (note that this relies on having the CUDA version of PyTorch installed); defaults to 0, meaning CPU will be used
+
+An example of how to run this script is shown below. This example instantiates a ResNet18 model to be trained on a binary classification task over 20 epochs. The model will be trained using a single GPU, and it is a transfer learning task, meaning that only the final layer of the model will be trained.
+```
+python resnet_classifier.py 18 2 20 data/train data/val -ts data/test -g 1 -tr
+```
