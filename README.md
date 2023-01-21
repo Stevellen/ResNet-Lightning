@@ -10,7 +10,7 @@ This is a quick Pytorch Lighning wrapper around the ResNet models provided by To
 * optimizer [-o] (optional) - The PyTorch optimizer to be used during training; defaults to "adam" optimizer
 * learning_rate [-lr] (optional) - Learning rate used in optimization; defaults to 1e-3
 * batch_size [-b] (optional) - Batch size used in training; defaults to 16
-* transfer [-tr] (optional) - Flag to indicate whether this is a transfer learning task or not; defaults to false, meaning the entire model will be trained unless this flag is provided
+* transfer [-tr] (optional) - Flag to indicate whether this is a transfer learning task or not; defaults to True, meaning pretrained parameters will be loaded prior to training
 * tune_fc_only [-to] (optional) - Indicates whether the model should only train the fully-connected output layers or fine-tune the resnet backbone as well; defaults to True
 * save_path [-s] (optional) - Path to directory where final model checkpoint will be saved; defaults to CWD.
 * gpus [-g] (optional) - Number of GPUs to use during training (note that this relies on having the CUDA version of PyTorch installed); defaults to 0, meaning CPU will be used
