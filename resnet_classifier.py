@@ -104,7 +104,7 @@ class ResNetClassifier(pl.LightningModule):
         acc = (torch.argmax(y,1) == torch.argmax(preds,1)) \
                 .type(torch.FloatTensor).mean()
         # perform logging
-        self.log("val_loss", loss, on_epoch=True, prog_bar=True, logger=True)
+        self.log("val_loss", loss, on_epoch=True, prog_bar=False, logger=True)
         self.log("val_acc", acc, on_epoch=True, prog_bar=True, logger=True)
 
 
@@ -145,6 +145,7 @@ if __name__ == "__main__":
     parser.add_argument("train_set", help="""Path to training data folder.""", type=Path)
     parser.add_argument("vld_set", help="""Path to validation set folder.""", type=Path)
     # Optional arguments
+    parser.add_argument('-amp', '--mixed_precision', help="""Use mixed precision during training. Defaults to False.""", action="store_true")
     parser.add_argument("-ts", "--test_set", help="""Optional test set path.""", type=Path)
     parser.add_argument("-o", "--optimizer", help="""PyTorch optimizer to use. Defaults to adam.""", default='adam')
     parser.add_argument("-lr", "--learning_rate", help="Adjust learning rate of optimizer.", type=float, default=1e-3)
@@ -163,10 +164,30 @@ if __name__ == "__main__":
                             train_path = args.train_set,vld_path = args.vld_set, test_path = args.test_set,
                             optimizer = args.optimizer, lr = args.learning_rate,
                             batch_size = args.batch_size, transfer = args.transfer, tune_fc_only = args.tune_fc_only)
+
+    checkpoint_callback = pl.callbacks.ModelCheckpoint(
+        dirpath=args.save_path,
+        filename="resnet-model-{epoch}-{val_loss:.2f}-{val_acc:0.2f}",
+        monitor='val_loss',
+        save_top_k=3,
+        mode='min',
+        save_last=True
+    )
     # Instantiate lightning trainer and train model
-    trainer_args = {'gpus': args.gpus, 'max_epochs': args.num_epochs}
+    trainer_args = {
+        'accelerator': 'gpu' if args.gpus else None,
+        'devices': args.gpus or None,
+        'max_epochs': args.num_epochs,
+        'callbacks': [checkpoint_callback],
+        'precision': 16 if args.mixed_precision else 32
+    }
     trainer = pl.Trainer(**trainer_args)
+
     trainer.fit(model)
+    
+    if args.test_set:
+        trainer.test(model)
     # Save trained model
-    save_path = (args.save_path if args.save_path is not None else '/') + 'trained_model.ckpt'
-    trainer.save_checkpoint(save_path)
+    save_path = (args.save_path if args.save_path is not None else '/')
+    # save model weights
+    torch.save(trainer.model.resnet_model.state_dict(), save_path + 'trained_model.pt')
