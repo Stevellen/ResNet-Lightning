@@ -1,6 +1,6 @@
 <h1><center>ResNet-Lightning</center></h1> 
 
-This is a quick Pytorch-Lightning wrapper around the ResNet models provided by Torchvision. This code is reliant on **torch**, **torchvision** and **pytorch-lightning** packages, which must be installed separately. The model can be trained directly from the command line using the following arguments:
+This is a quick Pytorch-Lightning wrapper around the ResNet models provided by Torchvision. This code is reliant on **torch**, **torchvision** and **pytorch-lightning** packages, which must be installed separately. The **tensorboard** package can be optionally installed to enable Tensorboard logging of basic metrics. Models can be trained directly from the command line using the following arguments:
 
 * model - The ResNet variant to be used, e.g. 18, 50, etc.
 * num_classes - The number of target classes being trained. In the case of a binary classification task, the model uses BCEWithLogitLoss, whereas with multiclass problems it uses CrossEntropyLoss.
